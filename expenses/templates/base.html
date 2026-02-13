@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>{% block title %}Budget Tracker{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-link {
+            background: transparent;
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-category {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .expense-description {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .expense-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #dc3545;
+        }
+
+        .total-display {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .total-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .total-amount {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-card-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .summary-card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .month-nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: #f0f0f0;
+            font-size: 14px;
+        }
+
+        .month-nav .current-month {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="header">
+        <h1>💰 Budget Tracker</h1>
+        <div class="subtitle">Track your daily expenses</div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <div class="nav-bar">
+        <a href="{% url 'home' %}" class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            ➕ Add
+        </a>
+        <a href="{% url 'history' %}" class="nav-item {% if request.resolver_match.url_name == 'history' %}active{% endif %}">
+            📊 History
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Expense - Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if today_total > 0 %}
+    <div class="total-display">
+        <div class="total-label">Today's Spending</div>
+        <div class="total-amount">${{ today_total|floatformat:2 }}</div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h2 style="margin-bottom: 20px; font-size: 20px;">Add New Expense</h2>
+        <form method="post" action="{% url 'home' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.amount.id_for_label }}">Amount ($)</label>
+                {{ form.amount }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.category.id_for_label }}">Category</label>
+                {{ form.category }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description (Optional)</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.date.id_for_label }}">Date</label>
+                {{ form.date }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">💾 Save Expense</button>
+        </form>
+    </div>
+
+    {% if today_expenses %}
+    <div class="card">
+        <h3 style="margin-bottom: 15px; font-size: 18px; color: #666;">Today's Expenses</h3>
+        {% for expense in today_expenses %}
+        <div class="expense-item">
+            <div class="expense-info">
+                <div class="expense-category">
+                    {{ expense.get_category_display }}
+                </div>
+                {% if expense.description %}
+                <div class="expense-description">{{ expense.description }}</div>
+                {% endif %}
+            </div>
+            <div class="expense-amount">${{ expense.amount|floatformat:2 }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

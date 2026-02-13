@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Expense - Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <h2 style="margin-bottom: 20px; font-size: 20px;">Edit Expense</h2>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.amount.id_for_label }}">Amount ($)</label>
+                {{ form.amount }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.category.id_for_label }}">Category</label>
+                {{ form.category }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description (Optional)</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.date.id_for_label }}">Date</label>
+                {{ form.date }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">💾 Update Expense</button>
+            <a href="{% url 'expense_delete' expense.pk %}" class="btn btn-danger">🗑️ Delete Expense</a>
+            <a href="{% url 'history' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
