@@ -10,7 +10,8 @@ class Category(models.Model):
         ('grocery', 'Grocery'),
         ('health', 'Health & Medication'),
         ('utility', 'Utility'),
-        ('wear', 'Wear')
+        ('cosmetic', 'Cosmetic'),
+        ('wear', 'Wear'),
     ]
 
     name  = models.CharField(max_length=50, choices=CATEGORY_CHOICES, unique=True)
@@ -21,7 +22,7 @@ class Category(models.Model):
 
 class Expense(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.CharField(max_length=50, choices=Category.CATEGORY_CHOICES)
+    category = models.CharField(max_length=50, choices=Category.CATEGORY_CHOICES, default='meal')
     description = models.CharField(max_length=200, blank=True, default='')
     date = models.DateField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
